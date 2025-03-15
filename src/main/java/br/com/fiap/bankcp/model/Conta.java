@@ -1,10 +1,12 @@
 package br.com.fiap.bankcp.model;
 
-import br.com.fiap.bankcp.controller.model.ETipo;
-
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Random;
 
 public class Conta {
+
+    private Long id;
 
     private Integer numeroAgencia;
 
@@ -14,13 +16,14 @@ public class Conta {
 
     private LocalDate dataAbertura;
 
-    private long saldo;
+    private BigDecimal saldo;
 
     private boolean ativa;
 
     private ETipo tipo;
 
-    public Conta(Integer numeroAgencia, String nomeTitular, String cpf, LocalDate dataAbertura, long saldo, boolean ativa, ETipo tipo) {
+    public Conta(Long id, Integer numeroAgencia, String nomeTitular, String cpf, LocalDate dataAbertura, BigDecimal saldo, boolean ativa, ETipo tipo) {
+        this.id = (id == null) ? Math.abs(new Random().nextLong()) : id;
         this.numeroAgencia = numeroAgencia;
         this.nomeTitular = nomeTitular;
         this.cpf = cpf;
@@ -28,6 +31,14 @@ public class Conta {
         this.saldo = saldo;
         this.ativa = ativa;
         this.tipo = tipo;
+    }
+
+    public void desativar() {
+        this.ativa = false;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Integer getNumeroAgencia() {
@@ -42,11 +53,15 @@ public class Conta {
         return cpf;
     }
 
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
     public LocalDate getDataAbertura() {
         return dataAbertura;
     }
 
-    public long getSaldo() {
+    public BigDecimal getSaldo() {
         return saldo;
     }
 
