@@ -37,6 +37,14 @@ public class Conta {
         this.ativa = false;
     }
 
+    public void depositar(BigDecimal valor) {
+        this.saldo = saldo.add(valor);
+    }
+
+    public void sacar(BigDecimal valor) {
+        this.saldo = saldo.subtract(valor);
+    }
+
     public Long getId() {
         return id;
     }
