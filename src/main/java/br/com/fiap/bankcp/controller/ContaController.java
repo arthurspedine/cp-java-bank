@@ -53,6 +53,7 @@ public class ContaController {
     public Conta depositarValor(@RequestBody TransacaoDTO dto) {
         validarTransacaoSimples(dto);
         Conta conta = buscarContaPorId(dto.id());
+        validarContaAtiva(conta);
         conta.depositar(dto.valor());
         log.info("Foi depositado o valor de {} na conta de id: {}", dto.valor(), dto.id());
         return conta;
@@ -62,6 +63,7 @@ public class ContaController {
     public Conta sacarValor(@RequestBody TransacaoDTO dto) {
         validarTransacaoSimples(dto);
         Conta conta = buscarContaPorId(dto.id());
+        validarContaAtiva(conta);
         validarSaldoSuficiente(dto.valor(), conta);
         conta.sacar(dto.valor());
         log.info("Saque realizado na conta id: {}! Valor saque {} | Valor atual {}", dto.id(), dto.valor(), conta.getSaldo());
@@ -72,7 +74,9 @@ public class ContaController {
     public Conta transacaoPix(@RequestBody TransacaoDTO dto) {
         validarTransacaoPix(dto);
         Conta contaOrigem = buscarContaPorId(dto.id());
+        validarContaAtiva(contaOrigem);
         Conta contaDestino = buscarContaPorId(dto.idDestino());
+        validarContaAtiva(contaDestino);
         validarSaldoSuficiente(dto.valor(), contaOrigem);
 
         realizarTransferencia(contaOrigem, contaDestino, dto.valor());
@@ -144,6 +148,11 @@ public class ContaController {
         if (conta.getSaldo().compareTo(valorSaque) < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O valor do saque excede o saldo atual da conta.");
         }
+    }
+
+    private void validarContaAtiva(Conta conta) {
+        if (!conta.isAtiva())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A conta " + conta.getId() + " está inativa.");
     }
 
     private void normalizarCpf(Conta conta) {
